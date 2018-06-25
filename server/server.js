@@ -14,15 +14,18 @@ io.on('connection', function (socket) {
     socket.emit('newMessage', generateMessage('Admin', 'Welcome Aboard'));
     socket.broadcast.emit('newMessage', generateMessage('Admin', 'New user aboard'));
     
-    socket.on('createMessage', function (newMessage) {
+    socket.on('createMessage', function (newMessage,callback) {
+
         console.log('createmessage', generateMessage(newMessage.from, newMessage.text));
         io.emit('newMessage', generateMessage(newMessage.from, newMessage.text));
-     /*   socket.broadcast.emit('newMessage', {
-            from:newMessage.from,
-            text: newMessage.text,
-            createdAt: new Date().getTime()
-        })  */
-    })
+
+                     /*   socket.broadcast.emit('newMessage', {
+                            from:newMessage.from,
+                            text: newMessage.text,
+                            createdAt: new Date().getTime()
+                        })  */
+        callback('This is from the server.');
+        })
     socket.on('disconnect', function () {
         console.log('Disconnected from client');
     })  
