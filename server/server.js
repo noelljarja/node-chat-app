@@ -7,27 +7,16 @@ var express = require('express');
 var app = express();
 var server = http.createServer(app);
 var io = socketIO(server);
+var { generateMessage } = require('./utils/message');
 app.use(express.static(publicpath));
 io.on('connection', function (socket) {
     console.log('New user connected');
-    socket.emit('newMessage', {
-        from: 'Admin',
-        text: 'Welcome to the chat app',
-        createdAt: new Date().getTime()
-    })
-    socket.broadcast.emit('newMessage', {
-        from: 'Admin',
-        text: 'New user joined',
-        createdAt: new Date().getTime()
-    })
-
-    socket.on('createMessage', function ( newMessage) {
-        console.log('createmessage', newMessage)
-        io.emit('newMessage', {
-            from: newMessage.from,
-            text: newMessage.text,
-            createdAt: new Date().getTime()
-        }) 
+    socket.emit('newMessage', generateMessage('Admin', 'Welcome Aboard'));
+    socket.broadcast.emit('newMessage', generateMessage('Admin', 'New user aboard'));
+    
+    socket.on('createMessage', function (newMessage) {
+        console.log('createmessage', generateMessage(newMessage.from, newMessage.text));
+        io.emit('newMessage', generateMessage(newMessage.from, newMessage.text));
      /*   socket.broadcast.emit('newMessage', {
             from:newMessage.from,
             text: newMessage.text,
